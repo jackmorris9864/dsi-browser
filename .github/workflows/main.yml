@@ -1,0 +1,31 @@
+
+name: Build DSi Browser
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install DS libraries
+        run: |
+          dkp-pacman -Sy --noconfirm
+          dkp-pacman -S --needed --noconfirm nds-dev
+
+      - name: Compile browser
+        run: make
+
+      - name: Upload NDS
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsi-browser-nds
+          path: dsi-browser.nds
