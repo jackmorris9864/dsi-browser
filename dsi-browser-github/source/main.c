@@ -259,7 +259,6 @@ static void url_prompt(void) {
             iprintf("URL: ");
         }
         if (down & KEY_START) {
-            powerOff(POWER_SOUND);
             return;
         }
     }
