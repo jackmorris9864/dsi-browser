@@ -1,0 +1,33 @@
+name: Build DSi Browser
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Nintendo DS libraries
+        shell: bash
+        run: |
+          dkp-pacman -Sy --noconfirm
+          dkp-pacman -S --needed --noconfirm nds-dev
+
+      - name: Build
+        shell: bash
+        run: make
+
+      - name: Upload NDS
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsi-browser-nds
+          path: dsi-browser.nds
+          if-no-files-found: error
